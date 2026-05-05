@@ -1,9 +1,0 @@
-version: 2
-
-sources:
-  - name: hubspot_raw
-    database: pprojects-488010
-    schema: pprojects_488010_marketing_data
-    tables:
-      - name: deals
-        description: Raw HubSpot deals table loaded into BigQuery.
