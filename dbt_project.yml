@@ -34,7 +34,7 @@ clean-targets: # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 models:
-  dbt_concepts:
+  dbt_bq_test:
     staging:
       +materialized: view
 
