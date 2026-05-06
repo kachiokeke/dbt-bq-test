@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: int_hubspot_deals_enriched
+    description: Enriched HubSpot deals model with business-friendly status, amount, date, and pipeline fields.
+
+    columns:
+      - name: deal_id
+        description: Unique HubSpot deal ID.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: deal_status
+        description: Business-friendly deal status derived from HubSpot closed/won/lost flags.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Open
+                  - Closed Won
+                  - Closed Lost
+                  - Closed Other
+
+      - name: open_closed_status
+        description: Simplified open vs closed status.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Open
+                  - Closed
+
+      - name: effective_amount
+        description: Best available deal amount using available HubSpot amount fields.
+
+      - name: weighted_pipeline_amount
+        description: Deal amount multiplied by HubSpot deal stage probability.
+
+      - name: created_month
+        description: Month when the deal was created.
+
+      - name: close_month
+        description: Month when the deal is expected or marked to close.
+
+      - name: deal_age_days
+        description: Number of days between deal creation and the current date.
+
+      - name: has_company
+        description: Boolean flag indicating whether a company name is populated.
+
+      - name: has_company_association
+        description: Boolean flag indicating whether a HubSpot company association exists.
