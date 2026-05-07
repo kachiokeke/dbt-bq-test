@@ -1,8 +1,29 @@
+{{
+    config(
+        materialized = 'incremental',
+        unique_key = 'created_month',
+        incremental_strategy = 'merge',
+        partition_by = {
+            "field": "created_month",
+            "data_type": "date",
+            "granularity": "month"
+        },
+        cluster_by = ["created_month"]
+    )
+}}
+
 with pipeline as (
 
     select
         *
     from {{ ref('int_hubspot_deals_enriched') }}
+
+    {% if is_incremental() %}
+        where created_month >= (
+            select date_sub(max(created_month), interval 1 month)
+            from {{ this }}
+        )
+    {% endif %}
 
 ),
 

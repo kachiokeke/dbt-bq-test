@@ -9,11 +9,9 @@ sources:
       loaded_at_field: _airbyte_extracted_at
       freshness:
         warn_after:
-          count: 360
+          count: 30
           period: day
-        error_after:
-          count: 700
-          period: day
+
 
     tables:
       - name: deals
