@@ -61,3 +61,7 @@ jobs:
       - name: Check dbt project can parse
         run: |
           dbt parse --profiles-dir ~/.dbt
+
+      - name: Check dbt project can compile
+        run: |
+          dbt compile --profiles-dir ~/.dbt    
