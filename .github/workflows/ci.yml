@@ -38,6 +38,26 @@ jobs:
         run: |
           pip install dbt-core dbt-bigquery
 
+      - name: Create dbt profiles directory
+        run: |
+          mkdir -p ~/.dbt
+
+      - name: Create dbt CI profile
+        run: |
+          cat > ~/.dbt/profiles.yml << 'EOF'
+          default:
+            target: ci
+            outputs:
+              ci:
+                type: bigquery
+                method: oauth
+                project: pprojects-488010
+                dataset: dbt_kachiokeke_ci
+                location: US
+                threads: 4
+                timeout_seconds: 300
+          EOF
+
       - name: Check dbt project can parse
         run: |
-          dbt parse
+          dbt parse --profiles-dir ~/.dbt
