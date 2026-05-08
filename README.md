@@ -359,6 +359,24 @@ ingestion/
 | Snapshots | Snapshot table | Historical tracking |
 
 ---
+## CI Automation
+
+This project includes a GitHub Actions CI workflow that runs on push and pull request events.
+
+The workflow:
+
+- Checks out the repository
+- Sets up Python
+- Installs ingestion dependencies
+- Validates the Python ingestion script syntax
+- Installs dbt dependencies
+- Creates a temporary dbt CI profile
+- Runs `dbt parse` to validate the dbt project structure
+
+Workflow file:
+
+```text
+.github/workflows/ci.yml
 
 ## Key Commands
 

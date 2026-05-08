@@ -360,6 +360,20 @@ ingestion/
 
 ---
 
+```markdown
+## GitHub Actions CI
+
+The project includes a CI workflow that runs automatically when changes are pushed to GitHub.
+
+To view workflow results:
+
+1. Open the GitHub repository.
+2. Go to the Actions tab.
+3. Open the latest `dbt and Python CI` run.
+4. Confirm the workflow completed successfully.
+
+The current CI workflow validates Python syntax and dbt project parsing. It does not yet run the full BigQuery pipeline.
+
 ## Key Commands
 
 Build Fake Store pipeline:
