@@ -1,3 +1,4 @@
+![dbt and Python CI](https://github.com/kachiokeke/dbt-bq-test/actions/workflows/ci.yml/badge.svg?branch=dbt-concepts)
 # dbt + BigQuery ELT Project
 
 ## Overview
