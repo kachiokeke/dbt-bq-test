@@ -16,7 +16,7 @@ It contains two workflows:
 The goal is to show how raw data can be ingested, cleaned, modeled, tested, validated, and prepared for reporting.
 
 ---
-
+ 
 ## Tech Stack
 
 | Tool | Purpose |
