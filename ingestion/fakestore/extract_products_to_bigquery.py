@@ -9,19 +9,74 @@ from google.cloud import bigquery
 
 def extract_products() -> list[dict]:
     """
-    Extract product data from the Fake Store API.
+    Extract product data from a public ecommerce API.
+
+    Primary source: Fake Store API.
+    Fallback source: DummyJSON products API.
     """
-    url = "https://fakestoreapi.com/products"
+    api_sources = [
+        {
+            "name": "fakestoreapi_products",
+            "url": "https://fakestoreapi.com/products",
+            "type": "list",
+        },
+        {
+            "name": "dummyjson_products",
+            "url": "https://dummyjson.com/products?limit=100",
+            "type": "dummyjson",
+        },
+    ]
 
-    response = requests.get(url, timeout=30)
-    response.raise_for_status()
+    last_error = None
 
-    products = response.json()
+    for source in api_sources:
+        try:
+            response = requests.get(
+                source["url"],
+                timeout=30,
+                headers={
+                    "User-Agent": "Mozilla/5.0 dbt-bigquery-elt-project"
+                },
+            )
+            response.raise_for_status()
 
-    if not isinstance(products, list):
-        raise ValueError("Expected API response to be a list of products.")
+            data = response.json()
 
-    return products
+            if source["type"] == "list":
+                if not isinstance(data, list):
+                    raise ValueError("Expected Fake Store API response to be a list.")
+                return data
+
+            if source["type"] == "dummyjson":
+                products = data.get("products", [])
+                if not isinstance(products, list):
+                    raise ValueError("Expected DummyJSON response to contain a products list.")
+
+                normalized_products = []
+
+                for product in products:
+                    normalized_products.append(
+                        {
+                            "id": product.get("id"),
+                            "title": product.get("title"),
+                            "price": product.get("price"),
+                            "description": product.get("description"),
+                            "category": product.get("category"),
+                            "image": product.get("thumbnail"),
+                            "rating": {
+                                "rate": product.get("rating"),
+                                "count": product.get("stock"),
+                            },
+                        }
+                    )
+
+                return normalized_products
+
+        except Exception as error:
+            last_error = error
+            print(f"Failed to extract from {source['name']}: {error}")
+
+    raise RuntimeError(f"All product API sources failed. Last error: {last_error}")
 
 
 def transform_products_for_raw_load(products: list[dict]) -> pd.DataFrame:
