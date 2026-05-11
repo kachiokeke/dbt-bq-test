@@ -1,5 +1,7 @@
 # dbt + BigQuery ELT Project
 
+![dbt and Python CI](https://github.com/kachiokeke/dbt-bq-test/actions/workflows/ci.yml/badge.svg)
+
 ## Overview
 
 This project demonstrates an analytics engineering and beginner data engineering workflow using **Python, BigQuery, dbt, and GitHub**.
@@ -410,6 +412,28 @@ Check HubSpot source freshness:
 
 ```bash
 dbt source freshness --select source:hubspot_raw.deals
+```
+
+The project includes a CI workflow that runs automatically when changes are pushed to GitHub.
+
+To check the workflow:
+
+1. Open the GitHub repository.
+2. Go to the **Actions** tab.
+3. Open the latest `dbt and Python CI` run.
+4. Confirm that `Run dbt and Python checks` completed successfully.
+
+The workflow currently validates Python syntax and dbt project compilation. It does not yet run the full ELT pipeline or execute dbt models in BigQuery.
+
+Current CI checks:
+
+```text
+Python dependency install
+Python syntax check
+dbt dependency install
+dbt profile creation
+dbt parse
+dbt compile
 ```
 
 ---

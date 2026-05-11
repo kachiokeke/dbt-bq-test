@@ -415,6 +415,50 @@ Check HubSpot source freshness:
 ```bash
 dbt source freshness --select source:hubspot_raw.deals
 ```
+## GitHub Actions CI
+
+This project includes a GitHub Actions CI workflow that runs on push and pull request events.
+
+The workflow validates:
+
+- Python dependency installation
+- Python ingestion script syntax
+- dbt dependency installation
+- temporary dbt profile creation
+- `dbt parse`
+- `dbt compile` with BigQuery credentials
+
+Workflow file:
+
+```text
+.github/workflows/ci.yml
+```
+
+Current CI flow:
+
+```text
+Push to GitHub
+    ↓
+GitHub Actions starts
+    ↓
+Checkout repository
+    ↓
+Set up Python
+    ↓
+Install dependencies
+    ↓
+Check Python syntax
+    ↓
+Install dbt
+    ↓
+Create dbt CI profile
+    ↓
+Run dbt parse
+    ↓
+Run dbt compile
+    ↓
+Pass / Fail
+```
 
 ---
 
