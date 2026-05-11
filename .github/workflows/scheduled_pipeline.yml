@@ -1,0 +1,76 @@
+name: Scheduled Fake Store ELT Pipeline
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+jobs:
+  run-fakestore-elt:
+    name: Run Fake Store ELT Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python ingestion dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ingestion/fakestore/requirements.txt
+
+      - name: Write GCP service account key
+        run: |
+          echo '${{ secrets.GCP_SA_KEY }}' > /tmp/gcp-service-account.json
+
+      - name: Create ingestion .env file
+        run: |
+          cat > ingestion/fakestore/.env << EOF
+          GCP_PROJECT_ID=pprojects-488010
+          BQ_DATASET_ID=raw_fakestore
+          BQ_TABLE_ID=products
+          GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-service-account.json
+          EOF
+
+      - name: Run Fake Store API ingestion
+        run: |
+          cd ingestion/fakestore
+          python extract_products_to_bigquery.py
+
+      - name: Install dbt dependencies
+        run: |
+          pip install dbt-core dbt-bigquery
+
+      - name: Create dbt profiles directory
+        run: |
+          mkdir -p ~/.dbt
+
+      - name: Create dbt production profile
+        run: |
+          cat > ~/.dbt/profiles.yml << 'EOF'
+          default:
+            target: prod
+            outputs:
+              prod:
+                type: bigquery
+                method: service-account
+                project: pprojects-488010
+                dataset: dbt_kachiokeke
+                keyfile: /tmp/gcp-service-account.json
+                location: US
+                threads: 4
+                timeout_seconds: 300
+          EOF
+
+      - name: Check Fake Store source freshness
+        run: |
+          dbt source freshness --select source:fakestore_raw.products --profiles-dir ~/.dbt
+
+      - name: Build Fake Store product catalog mart
+        run: |
+          dbt build --select +mart_product_catalog --profiles-dir ~/.dbt
