@@ -7,3 +7,33 @@ target/
 dbt_packages/
 logs/
 dbt_internal_packages/
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# Python cache files
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+
+# Secrets and credentials
+.env
+**/.env
+*.json
+
+# dbt generated files
+target/
+dbt_packages/
+dbt_internal_packages/
+logs/
+
+# Airflow generated files
+airflow/logs/
+airflow/.env
+airflow/config/
