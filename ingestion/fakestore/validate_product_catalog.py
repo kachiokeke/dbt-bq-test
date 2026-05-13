@@ -1,10 +1,12 @@
 import os
 from decimal import Decimal
+from typing import Optional
+
 from dotenv import load_dotenv
 from google.cloud import bigquery
 
 
-def get_env_value(name: str, default: str | None = None) -> str:
+def get_env_value(name: str, default: Optional[str] = None) -> str:
     value = os.getenv(name, default)
 
     if value is None:

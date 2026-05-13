@@ -38,7 +38,7 @@ with DAG(
         task_id="run_python_ingestion",
         bash_command=f"""
         cd {INGESTION_DIR}
-        python extract_products_to_bigquery.py
+        ENV_FILE=.env.airflow python extract_products_to_bigquery.py
         """,
     )
 
@@ -61,15 +61,24 @@ with DAG(
           --profiles-dir {DBT_PROFILES_DIR}
         """,
     )
+    
+    validate_product_catalog = BashOperator(
+    task_id="validate_product_catalog",
+    bash_command=f"""
+    cd {INGESTION_DIR}
+    ENV_FILE=.env.airflow python validate_product_catalog.py
+    """,
+)
 
     finish = EmptyOperator(
         task_id="finish_pipeline"
     )
 
-    (
-        start
-        >> run_python_ingestion
-        >> check_fakestore_source_freshness
-        >> build_product_catalog_mart
-        >> finish
-    )
+(
+    start
+    >> run_python_ingestion
+    >> check_fakestore_source_freshness
+    >> build_product_catalog_mart
+    >> validate_product_catalog
+    >> finish
+)
