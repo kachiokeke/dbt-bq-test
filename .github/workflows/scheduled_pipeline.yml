@@ -1,18 +1,8 @@
 name: Scheduled Fake Store ELT Pipeline
 
 on:
-  push:
-    branches:
-      - dbt-concepts
-    paths:
-      - ".github/workflows/scheduled_pipeline.yml"
-      - "ingestion/fakestore/**"
-      - "models/staging/fakestore/**"
-      - "models/marts/ecommerce/**"
-
   schedule:
     - cron: "0 7 * * 1"
-
   workflow_dispatch:
 
 jobs:
