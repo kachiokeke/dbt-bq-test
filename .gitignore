@@ -27,3 +27,5 @@ airflow/logs/
 airflow/.env
 airflow/config/
 airflow/dags/__pycache__/
+airflow/dbt_profiles/user.yml
+ingestion/fakestore/.env.airflow
