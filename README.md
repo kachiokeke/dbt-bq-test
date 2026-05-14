@@ -60,6 +60,83 @@ GitHub Actions / Airflow Orchestration
 
 ---
 
+## Architecture Diagrams
+
+### End-to-End ELT Architecture
+
+```mermaid
+flowchart LR
+
+    API[Public Product API] --> PY[Python Ingestion Script]
+    PY --> RAW[(BigQuery Raw Table<br/>raw_fakestore.products)]
+    RAW --> SRC[dbt Source<br/>fakestore_raw.products]
+    SRC --> STG[dbt Staging<br/>stg_fakestore_products]
+    STG --> MART[dbt Mart<br/>mart_product_catalog]
+    MART --> VAL[Validation Script<br/>validate_product_catalog.py]
+
+    HUBRAW[(BigQuery Raw HubSpot Deals)] --> HSRC[dbt Source<br/>hubspot_raw.deals]
+    HSRC --> HSTG[dbt Staging<br/>stg_hubspot_deals]
+    HSTG --> HINT[dbt Intermediate<br/>int_hubspot_deals_enriched]
+    HINT --> HMART1[dbt Mart<br/>mart_sales_pipeline]
+    HINT --> HMART2[Incremental Mart<br/>mart_sales_pipeline_monthly]
+    HSTG --> SNAP[dbt Snapshot<br/>snap_hubspot_deals]
+
+    VAL --> BQLOG[(BigQuery Log Table<br/>ingestion_run_log)]
+```
+
+---
+
+### Orchestration and Automation Flow
+
+```mermaid
+flowchart TD
+
+    DEV[Developer Pushes Code] --> GHA_CI[GitHub Actions CI]
+
+    GHA_CI --> PY_CHECK[Check Python Syntax]
+    GHA_CI --> DBT_PARSE[dbt parse]
+    GHA_CI --> DBT_COMPILE[dbt compile]
+
+    PY_CHECK --> CI_RESULT{CI Pass?}
+    DBT_PARSE --> CI_RESULT
+    DBT_COMPILE --> CI_RESULT
+
+    CI_RESULT -->|Yes| MERGE[Code Ready]
+    CI_RESULT -->|No| FIX[Fix Code or Config]
+
+    SCHEDULE[Scheduled GitHub Actions<br/>workflow_dispatch or cron] --> GH_INGEST[Run Python Ingestion]
+    GH_INGEST --> GH_FRESHNESS[dbt Source Freshness]
+    GH_FRESHNESS --> GH_BUILD[dbt Build mart_product_catalog]
+
+    AIRFLOW[Local Airflow DAG<br/>fakestore_elt_pipeline] --> AF_START[start_pipeline]
+    AF_START --> AF_INGEST[run_python_ingestion]
+    AF_INGEST --> AF_FRESHNESS[check_fakestore_source_freshness]
+    AF_FRESHNESS --> AF_BUILD[build_product_catalog_mart]
+    AF_BUILD --> AF_VALIDATE[validate_product_catalog]
+    AF_VALIDATE --> AF_FINISH[finish_pipeline]
+```
+
+---
+
+### Airflow DAG Task Flow
+
+```mermaid
+flowchart LR
+
+    START[start_pipeline] --> INGEST[run_python_ingestion]
+    INGEST --> FRESH[check_fakestore_source_freshness]
+    FRESH --> BUILD[build_product_catalog_mart]
+    BUILD --> VALIDATE[validate_product_catalog]
+    VALIDATE --> FINISH[finish_pipeline]
+
+    INGEST -.writes.-> RAW[(BigQuery<br/>raw_fakestore.products)]
+    INGEST -.logs.-> LOG[(BigQuery<br/>ingestion_run_log)]
+    BUILD -.creates.-> MART[(BigQuery<br/>mart_product_catalog)]
+    VALIDATE -.checks.-> MART
+```
+
+---
+
 # Workflow 1: HubSpot Sales Pipeline Analytics
 
 ## Source
