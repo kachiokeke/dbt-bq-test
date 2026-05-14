@@ -1,0 +1,15 @@
+.github/
+airflow/
+ingestion/
+logs/
+target/
+dbt_packages/
+dbt_internal_packages/
+.DS_Store
+**/.DS_Store
+__pycache__/
+**/__pycache__/
+*.pyc
+*.json
+.env
+**/.env
