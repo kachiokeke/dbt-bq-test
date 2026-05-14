@@ -1,0 +1,34 @@
+version: 2
+
+snapshots:
+  - name: snap_hubspot_deals
+    description: Historical snapshot of HubSpot deals used to track changes in stage, status, amount, close date, ownership, and other deal-level fields over time.
+
+    columns:
+      - name: deal_id
+        description: Unique HubSpot deal ID.
+        data_tests:
+          - not_null
+
+      - name: deal_stage_id
+        description: HubSpot deal stage ID at this version of the deal.
+
+      - name: amount
+        description: Deal amount at this version of the deal.
+
+      - name: close_at
+        description: Deal close timestamp at this version of the deal.
+
+      - name: dbt_valid_from
+        description: Timestamp when this version of the deal became valid.
+        data_tests:
+          - not_null
+
+      - name: dbt_valid_to
+        description: Timestamp when this version of the deal stopped being valid. Null means this is the current version.
+
+      - name: dbt_scd_id
+        description: dbt-generated unique identifier for each historical snapshot row.
+        data_tests:
+          - not_null
+          - unique

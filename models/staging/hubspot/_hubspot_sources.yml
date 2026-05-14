@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: hubspot_raw
+    database: pprojects-488010
+    schema: pprojects_488010_marketing_data
+
+    config:
+      loaded_at_field: _airbyte_extracted_at
+      freshness:
+        warn_after:
+          count: 30
+          period: day
+
+
+    tables:
+      - name: deals
+        description: Raw HubSpot deals table loaded into BigQuery.
+        columns:
+          - name: id
+            description: HubSpot deal ID.
+
+          - name: _airbyte_extracted_at
+            description: Timestamp when Airbyte extracted the record.
+
+          - name: properties
+            description: Raw HubSpot deal properties JSON object.

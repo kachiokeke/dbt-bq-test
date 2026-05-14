@@ -1,6 +1,31 @@
-# you shouldn't commit these into source control
-# these are the default directory names, adjust/add to fit your needs
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# Python cache files
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# Secrets and credentials
+.env
+**/.env
+*.json
+
+# dbt generated files
 target/
 dbt_packages/
-logs/
 dbt_internal_packages/
+logs/
+
+# Airflow generated files
+airflow/logs/
+airflow/.env
+airflow/config/
+airflow/dags/__pycache__/
+airflow/dbt_profiles/user.yml
+ingestion/fakestore/.env.airflow

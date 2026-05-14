@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: stg_hubspot_deals
+    description: Cleaned and deduplicated staging model for HubSpot deals.
+    columns:
+      - name: deal_id
+        description: Unique HubSpot deal ID.
+        tests:
+          - not_null
+          - unique
+
+      - name: deal_name
+        description: Name of the HubSpot deal.
+
+      - name: company_name
+        description: Company associated with the deal.
+
+      - name: pipeline_id
+        description: HubSpot pipeline ID.
+        tests:
+          - not_null
+
+      - name: deal_stage_id
+        description: HubSpot deal stage ID.
+        tests:
+          - not_null
+
+      - name: created_at
+        description: Timestamp when the deal was created.
+
+      - name: updated_at
+        description: Timestamp when the deal was last updated.
+
+      - name: close_at
+        description: HubSpot close date timestamp.
+
+      - name: amount
+        description: Deal amount.
+
+      - name: deal_stage_probability
+        description: Probability associated with the current deal stage.
+
+      - name: is_closed
+        description: Indicates whether the deal is closed.
+
+      - name: is_closed_won
+        description: Indicates whether the deal is closed won.
+
+      - name: is_closed_lost
+        description: Indicates whether the deal is closed lost.
+
+      - name: airbyte_extracted_at
+        description: Timestamp when Airbyte extracted the raw record.

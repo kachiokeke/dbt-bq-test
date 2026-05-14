@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: stg_fakestore_products
+    description: Cleaned and deduplicated staging model for Fake Store API products.
+
+    columns:
+      - name: product_id
+        description: Unique product ID.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_title
+        description: Product title.
+        data_tests:
+          - not_null
+
+      - name: product_price
+        description: Product price.
+        data_tests:
+          - not_null
+
+      - name: product_category
+        description: Product category.
+        data_tests:
+          - not_null
+
+      - name: rating_rate
+        description: Average product rating.
+
+      - name: rating_count
+        description: Number of product ratings.
+
+      - name: ingested_at
+        description: Timestamp when the row was loaded into BigQuery.
+        data_tests:
+          - not_null

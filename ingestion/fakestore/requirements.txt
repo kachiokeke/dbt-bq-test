@@ -1,0 +1,6 @@
+requests
+pandas
+google-cloud-bigquery
+python-dotenv
+pyarrow
+pandas-gbq>=0.26.1

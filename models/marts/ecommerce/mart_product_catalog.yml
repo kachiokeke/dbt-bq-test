@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: mart_product_catalog
+    description: Ecommerce product catalog mart aggregated by product category.
+
+    columns:
+      - name: product_category
+        description: Product category.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_count
+        description: Number of products in the category.
+        data_tests:
+          - not_null
+
+      - name: average_product_price
+        description: Average product price within the category.
+
+      - name: total_catalog_value
+        description: Sum of product prices within the category.
+
+      - name: average_rating
+        description: Average product rating within the category.
+
+      - name: highly_rated_product_count
+        description: Number of products with rating of 4 or higher.
+
+      - name: premium_product_count
+        description: Number of products priced at 100 or above.
+
+      - name: mart_updated_at
+        description: Timestamp when the mart was last built.

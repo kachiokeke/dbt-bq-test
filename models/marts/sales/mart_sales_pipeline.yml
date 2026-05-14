@@ -1,0 +1,81 @@
+version: 2
+
+models:
+  - name: mart_sales_pipeline
+    description: Dashboard-ready sales pipeline mart aggregated by month, pipeline, stage, source, status, and project type.
+
+    columns:
+      - name: created_month
+        description: Month when the deal was created.
+
+      - name: close_month
+        description: Month when the deal is expected or marked to close.
+
+      - name: pipeline_id
+        description: HubSpot pipeline ID.
+        data_tests:
+          - not_null
+
+      - name: deal_stage_id
+        description: HubSpot deal stage ID.
+        data_tests:
+          - not_null
+
+      - name: deal_status
+        description: Business-friendly deal status.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Open
+                  - Closed Won
+                  - Closed Lost
+                  - Closed Other
+
+      - name: open_closed_status
+        description: Simplified open versus closed status.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Open
+                  - Closed
+
+      - name: deal_count
+        description: Number of deals in the aggregated segment.
+        data_tests:
+          - not_null
+
+      - name: open_deal_count
+        description: Number of open deals in the aggregated segment.
+
+      - name: closed_deal_count
+        description: Number of closed deals in the aggregated segment.
+
+      - name: won_deal_count
+        description: Number of closed-won deals in the aggregated segment.
+
+      - name: lost_deal_count
+        description: Number of closed-lost deals in the aggregated segment.
+
+      - name: total_effective_amount
+        description: Total deal value using the best available deal amount.
+
+      - name: total_weighted_pipeline_amount
+        description: Total probability-weighted pipeline value.
+
+      - name: open_pipeline_amount
+        description: Total value of open pipeline.
+
+      - name: weighted_open_pipeline_amount
+        description: Probability-weighted value of open pipeline.
+
+      - name: closed_won_rate
+        description: Closed-won deals divided by total closed deals.
+
+      - name: closed_lost_rate
+        description: Closed-lost deals divided by total closed deals.
+
+      - name: mart_updated_at
+        description: Timestamp when the mart was last built.

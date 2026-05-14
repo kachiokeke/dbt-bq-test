@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: mart_sales_pipeline_monthly
+    description: Executive monthly sales pipeline mart summarizing HubSpot deal creation, status, value, and win/loss performance.
+
+    columns:
+      - name: created_month
+        description: Month when deals were created.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: deals_created
+        description: Number of deals created in the month.
+        data_tests:
+          - not_null
+
+      - name: open_deals
+        description: Number of deals currently open.
+
+      - name: closed_deals
+        description: Number of deals currently closed.
+
+      - name: won_deals
+        description: Number of deals marked as closed won.
+
+      - name: lost_deals
+        description: Number of deals marked as closed lost.
+
+      - name: total_pipeline_value
+        description: Total deal value using the best available deal amount.
+
+      - name: weighted_pipeline_value
+        description: Probability-weighted pipeline value.
+
+      - name: win_rate
+        description: Closed-won deals divided by total closed deals.
+
+      - name: loss_rate
+        description: Closed-lost deals divided by total closed deals.
+
+      - name: mart_updated_at
+        description: Timestamp when the monthly mart was last built.
