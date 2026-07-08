@@ -38,7 +38,7 @@ The goal is to show how raw operational/API data can be ingested, cleaned, trans
 
 ## Architecture
 
-text
+
 External API / Raw Source Data
         ↓
 Python Ingestion
@@ -143,7 +143,7 @@ flowchart LR
 
 Raw HubSpot deals data is stored in BigQuery:
 
-text
+
 pprojects-488010.pprojects_488010_marketing_data.deals
 
 
@@ -166,7 +166,7 @@ The table includes:
 
 ## HubSpot dbt Flow
 
-text
+
 hubspot_raw.deals
     ↓
 stg_hubspot_deals
@@ -198,7 +198,6 @@ Key transformations:
 
 Grain:
 
-text
 One row per HubSpot deal
 
 
@@ -232,7 +231,6 @@ Key fields created:
 
 Grain:
 
-text
 One row per HubSpot deal
 
 
@@ -242,13 +240,11 @@ One row per HubSpot deal
 
 effective_amount answers:
 
-text
 How much is this deal worth based on the best available amount field?
 
 
 It uses fallback logic:
 
-sql
 coalesce(
     amount,
     amount_in_home_currency,
@@ -260,13 +256,11 @@ coalesce(
 
 weighted_pipeline_amount answers:
 
-text
 What is the expected value of this deal after applying stage probability?
 
 
 It is calculated as:
 
-text
 effective_amount × deal_stage_probability
 
 
@@ -310,7 +304,6 @@ Creates an executive-level monthly sales pipeline mart.
 
 Grain:
 
-text
 One row per created month
 
 
@@ -349,19 +342,16 @@ The snapshot captures changes in:
 
 Snapshot strategy:
 
-text
 timestamp
 
 
 Unique key:
 
-text
 deal_id
 
 
 Snapshot output table:
 
-text
 pprojects-488010.snapshots.snap_hubspot_deals
 
 
@@ -381,7 +371,6 @@ The HubSpot source uses _airbyte_extracted_at to monitor whether the raw source 
 
 Example command:
 
-bash
 dbt source freshness --select source:hubspot_raw.deals
 
 
@@ -395,13 +384,11 @@ The Fake Store / public product API provides ecommerce-style product data.
 
 Primary endpoint:
 
-text
 https://fakestoreapi.com/products
 
 
 Fallback endpoint:
 
-text
 https://dummyjson.com/products?limit=100
 
 
@@ -409,7 +396,6 @@ The fallback exists because the primary API may block some hosted environments s
 
 Raw BigQuery table:
 
-text
 pprojects-488010.raw_fakestore.products
 
 
@@ -417,7 +403,6 @@ pprojects-488010.raw_fakestore.products
 
 ## Fake Store ELT Flow
 
-text
 Public Product API
     ↓
 Python ingestion script
@@ -439,7 +424,6 @@ Airflow validation task
 
 Script:
 
-text
 ingestion/fakestore/extract_products_to_bigquery.py
 
 
@@ -470,7 +454,6 @@ Raw fields loaded include:
 
 Current load strategy:
 
-text
 WRITE_TRUNCATE
 
 
@@ -482,7 +465,6 @@ This means the raw products table is replaced on each run.
 
 The ingestion script writes operational metadata to:
 
-text
 pprojects-488010.raw_fakestore.ingestion_run_log
 
 
@@ -509,7 +491,6 @@ The Fake Store source uses _ingested_at as its freshness timestamp.
 
 Example command:
 
-bash
 dbt source freshness --select source:fakestore_raw.products
 
 
@@ -531,7 +512,6 @@ Key transformations:
 
 Grain:
 
-text
 One row per product
 
 
@@ -552,7 +532,6 @@ Aggregates product data by category.
 
 Grain:
 
-text
 One row per product category
 
 
@@ -584,7 +563,6 @@ A validation script checks that product totals reconcile between staging and mar
 
 Script:
 
-text
 ingestion/fakestore/validate_product_catalog.py
 
 
@@ -603,7 +581,6 @@ If the values do not match, the Airflow validation task fails.
 
 Workflow file:
 
-text
 .github/workflows/ci.yml
 
 
@@ -620,7 +597,6 @@ It validates:
 
 Current CI flow:
 
-text
 Push / Pull Request
     ↓
 Checkout repository
@@ -648,7 +624,6 @@ Pass / Fail
 
 Workflow file:
 
-text
 .github/workflows/scheduled_pipeline.yml
 
 
@@ -664,7 +639,6 @@ It performs:
 
 Current trigger:
 
-text
 schedule + workflow_dispatch
 
 
@@ -678,19 +652,16 @@ Airflow runs locally using Docker Compose.
 
 Airflow DAG file:
 
-text
 airflow/dags/fakestore_elt_dag.py
 
 
 DAG:
 
-text
 fakestore_elt_pipeline
 
 
 Task flow:
 
-text
 start_pipeline
     ↓
 run_python_ingestion
@@ -715,7 +686,6 @@ The DAG uses:
 
 # dbt Project Structure
 
-text
 models/
   staging/
     hubspot/
@@ -778,7 +748,6 @@ Because this repository includes dbt, Python, GitHub Actions, Airflow, and Docke
 
 Ignored folders include:
 
-text
 .github/
 airflow/
 ingestion/
@@ -813,7 +782,6 @@ The HubSpot monthly mart uses:
 
 ### Fake Store Raw Validation
 
-sql
 select
     count(*) as total_rows,
     count(distinct id) as distinct_products,
@@ -829,7 +797,6 @@ from `pprojects-488010.raw_fakestore.products`;
 
 ### Fake Store Mart Validation
 
-sql
 select
     'staging' as layer,
     count(*) as total_products,
@@ -847,7 +814,6 @@ from `pprojects-488010.dbt_kachiokeke.mart_product_catalog`;
 
 Expected:
 
-text
 staging totals = mart totals
 
 
@@ -855,7 +821,6 @@ staging totals = mart totals
 
 ### Ingestion Log Validation
 
-sql
 select
     run_id,
     source_name,
@@ -873,7 +838,6 @@ limit 10;
 
 Expected:
 
-text
 status = success
 error_message = null
 
@@ -882,7 +846,6 @@ error_message = null
 
 ### HubSpot Monthly Mart Validation
 
-sql
 select
     'intermediate' as layer,
     count(*) as total_deals,
@@ -902,7 +865,6 @@ from `pprojects-488010.dbt_kachiokeke.mart_sales_pipeline_monthly`;
 
 Expected:
 
-text
 intermediate totals = monthly mart totals
 
 
@@ -912,7 +874,6 @@ intermediate totals = monthly mart totals
 
 Run Fake Store ingestion locally:
 
-bash
 cd ingestion/fakestore
 source .venv/bin/activate
 ENV_FILE=.env.local python extract_products_to_bigquery.py
@@ -920,38 +881,32 @@ ENV_FILE=.env.local python extract_products_to_bigquery.py
 
 Build Fake Store mart:
 
-bash
 dbt build --select +mart_product_catalog
 
 
 Run Fake Store source freshness:
 
-bash
 dbt source freshness --select source:fakestore_raw.products
 
 
 Build HubSpot monthly mart:
 
-bash
 dbt build --select +mart_sales_pipeline_monthly
 
 
 Run HubSpot snapshot:
 
-bash
 dbt snapshot --select snap_hubspot_deals
 
 
 Start Airflow locally:
 
-bash
 cd airflow
 docker compose up -d
 
 
 Trigger Airflow DAG:
 
-text
 Airflow UI → DAGs → fakestore_elt_pipeline → Trigger
 
 
@@ -1042,7 +997,6 @@ Airflow UI → DAGs → fakestore_elt_pipeline → Trigger
 
 This project demonstrates a complete modern ELT workflow:
 
-text
 API / Raw Source
     ↓
 Python Ingestion
