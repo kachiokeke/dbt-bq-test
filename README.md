@@ -16,6 +16,12 @@ It contains two workflows:
 The goal is to show how raw data can be ingested, cleaned, modeled, tested, validated, and prepared for reporting.
 
 ---
+
+## Optional AI/DataOps Summary Layer
+
+This repository includes an optional reporting layer in [`ai_ops/`](ai_ops/README.md). It collects read-only BigQuery row-count context and generates a deterministic Markdown pipeline health summary. This layer is for explanation and operational review after ingestion, dbt tests, freshness checks, and validation have run; it does not replace the existing pipeline checks.
+
+---
  
 ## Tech Stack
 

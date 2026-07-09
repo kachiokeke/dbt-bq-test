@@ -33,3 +33,6 @@ airflow/dags/__pycache__/
 /ingestion/fakestore/.env.airflow
 
 /airflow/dbt_profiles/.user.yml
+
+# Generated AI/DataOps context
+/ai_ops/pipeline_context.json
